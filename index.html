@@ -6,7 +6,7 @@
   - Script inline protetto da hash crittografico SHA-384 nella CSP (zero 'unsafe-inline' per JS).
   - Gli unici dati che lasciano il browser sono quelli che l'utente invia volontariamente
     cliccando sui pulsanti verso servizi di terze parti:
-    1) WhatsApp (Meta) tramite api.whatsapp.com/send
+    1) WhatsApp (Meta) tramite wa.me
     2) Google Calendar tramite calendar.google.com/calendar/render
 -->
 <!DOCTYPE html>
@@ -14,8 +14,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha384-rIusmCnzpfsRqg0lnxSzg5O7oWLaexoL5HAhMe0IJxXbXDIZZ0BY4TZg1RG5SFmf'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; connect-src 'none'; upgrade-insecure-requests;" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#d90429" id="themeColorMeta" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha384-pdvNZhY9S8hqzVD47/jhk0QkYq72mLJOS+5jKXoIp/YigyHUOR9xNUQI7eNUfMCN'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; connect-src 'none'; upgrade-insecure-requests;" />
   <title>Ho una possibilità? 💌</title>
+  <meta name="description" content="Un piccolo invito speciale pensato per te..." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Ho una possibilità? 💌" />
+  <meta property="og:description" content="Un piccolo invito speciale pensato per te..." />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Ho una possibilità? 💌" />
+  <meta name="twitter:description" content="Un piccolo invito speciale pensato per te..." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%8C%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -146,7 +158,7 @@
       }
     }
 
-    /* Contenitore principale responsive (Mobile -> Laptop -> Desktop) */
+    /* Contenitore principale responsive */
     .app-shell {
       position: relative;
       z-index: 2;
@@ -374,7 +386,7 @@
       margin: 0;
       transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.28s cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s ease;
       box-shadow: 0 10px 25px rgba(89, 13, 34, 0.38);
-      background: rgba(159, 18, 57, 0.88);
+      background: rgba(159, 18, 57, 0.92);
     }
 
     .btn-no.caught {
@@ -781,6 +793,7 @@
       padding: 15px 18px;
       background: #25D366;
       color: #ffffff;
+      text-decoration: none;
       box-shadow: 0 10px 22px rgba(37, 211, 102, 0.28);
     }
 
@@ -847,6 +860,15 @@
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
@@ -1026,7 +1048,7 @@
         </div>
 
         <p class="error-msg" id="dateErrorMsg">
-          Scegli una data compresa tra oggi e il 31 dicembre 2028.
+          Scegli una data da oggi in poi 📅
         </p>
 
         <button type="button" class="btn btn-primary-rose" id="btnGenerateTicket">
@@ -1070,9 +1092,9 @@
         </div>
 
         <div class="ticket-actions">
-          <button type="button" class="btn btn-whatsapp" id="btnWhatsapp">
+          <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" id="btnWhatsapp">
             Invia su WhatsApp 💬
-          </button>
+          </a>
 
           <a href="https://calendar.google.com/calendar/render" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-soft" id="btnGoogleCal" style="text-decoration:none;">
             🗓️ Aggiungi a Google Calendar
@@ -1083,7 +1105,7 @@
           </button>
 
           <p class="privacy-note">
-            Nessun dato viene salvato online: le informazioni vengono inviate a WhatsApp o Google Calendar solo su tua azione.
+            Nessun dato viene salvato: il riepilogo resta solo sul tuo telefono finché non decidi tu di inviarlo.
           </p>
         </div>
       </div>
@@ -1124,6 +1146,7 @@
       // --- RIFERIMENTI DOM ---
       const body = document.body;
       const ambientBg = document.getElementById('ambientBg');
+      const themeColorMeta = document.getElementById('themeColorMeta');
 
       const screens = {
         step1: document.getElementById('step1'),
@@ -1176,22 +1199,28 @@
       const btnRestartAll = document.getElementById('btnRestartAll');
       const toast = document.getElementById('toast');
 
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       // --- CUORI FLUTTUANTI DI SFONDO ---
       function spawnHeart() {
+        if (prefersReducedMotion || document.hidden) return;
         const heart = document.createElement('span');
         heart.className = 'floating-heart';
         const isSoft = body.classList.contains('soft-theme');
         const symbols = isSoft ? ['🌸', '💕', '✨', '🤍'] : ['❤️', '💖', '💕', '✨'];
         heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        heart.style.left = Math.random() * 96 + 'vw';
+        heart.style.left = Math.random() * 94 + 'vw';
         heart.style.fontSize = (14 + Math.random() * 14) + 'px';
         const duration = 7 + Math.random() * 6;
         heart.style.animationDuration = duration + 's';
         ambientBg.appendChild(heart);
         setTimeout(() => heart.remove(), duration * 1000);
       }
-      setInterval(spawnHeart, 1300);
-      for (let i = 0; i < 5; i++) setTimeout(spawnHeart, i * 350);
+
+      if (!prefersReducedMotion) {
+        setInterval(spawnHeart, 1300);
+        for (let i = 0; i < 5; i++) setTimeout(spawnHeart, i * 350);
+      }
 
       // --- NAVIGAZIONE TRA STEP ---
       function showScreen(name) {
@@ -1201,7 +1230,7 @@
         if (name !== 'step1') {
           btnNo.style.display = 'none';
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       }
 
       // --- LOGICA STEP 1: PULSANTE "NO" CHE SCAPPA 3 VOLTE ---
@@ -1212,8 +1241,9 @@
       ];
 
       function getSafeViewportSize() {
-        const vw = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
-        const vh = Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight);
+        const vv = window.visualViewport;
+        const vw = vv ? vv.width : Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
+        const vh = vv ? vv.height : Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight);
         return { vw, vh };
       }
 
@@ -1228,7 +1258,7 @@
         const btnRect = btnNo.getBoundingClientRect();
         const yesRect = btnYes.getBoundingClientRect();
 
-        const pad = 20;
+        const pad = 24;
         const maxX = Math.max(pad, vw - btnRect.width - pad);
         const maxY = Math.max(pad, vh - btnRect.height - pad);
 
@@ -1243,14 +1273,14 @@
 
           const distFromCurrent = Math.hypot(targetX - btnRect.left, targetY - btnRect.top);
           const overlapsYes = !(
-            targetX + btnRect.width + 14 < yesRect.left ||
-            targetX - 14 > yesRect.right ||
-            targetY + btnRect.height + 14 < yesRect.top ||
-            targetY - 14 > yesRect.bottom
+            targetX + btnRect.width + 16 < yesRect.left ||
+            targetX - 16 > yesRect.right ||
+            targetY + btnRect.height + 16 < yesRect.top ||
+            targetY - 16 > yesRect.bottom
           );
 
           if (distFromCurrent > 80 && !overlapsYes) break;
-        } while (attempts < 30);
+        } while (attempts < 35);
 
         btnNo.style.left = Math.round(targetX) + 'px';
         btnNo.style.top = Math.round(targetY) + 'px';
@@ -1292,7 +1322,7 @@
         if (!btnNo.classList.contains('escaping') || btnNo.style.display === 'none') return;
         const { vw, vh } = getSafeViewportSize();
         const rect = btnNo.getBoundingClientRect();
-        const pad = 16;
+        const pad = 20;
         const clampedX = Math.min(Math.max(pad, rect.left), Math.max(pad, vw - rect.width - pad));
         const clampedY = Math.min(Math.max(pad, rect.top), Math.max(pad, vh - rect.height - pad));
         btnNo.style.left = Math.round(clampedX) + 'px';
@@ -1317,6 +1347,7 @@
 
       function goBackToStep1() {
         body.classList.remove('soft-theme');
+        if (themeColorMeta) themeColorMeta.setAttribute('content', '#d90429');
         resetStep1();
         showScreen('step1');
       }
@@ -1332,6 +1363,7 @@
 
       function goToStep2() {
         body.classList.add('soft-theme');
+        if (themeColorMeta) themeColorMeta.setAttribute('content', '#fff5f6');
         btnNo.style.display = 'none';
         for (let i = 0; i < 8; i++) setTimeout(spawnHeart, i * 100);
         showScreen('step2');
@@ -1341,6 +1373,10 @@
       btnYesAfterSurrender.addEventListener('click', goToStep2);
 
       // --- LOGICA STEP 2: SCELTA ATTIVITÀ ---
+      function sanitizeText(str) {
+        return str.trim().replace(/\s+/g, ' ');
+      }
+
       optionBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
           optionBtns.forEach((b) => b.classList.remove('selected'));
@@ -1362,8 +1398,8 @@
       });
 
       function validateCustomInputs() {
-        const actOk = customActivityInput.value.trim().length > 0;
-        const placeOk = customPlaceInput.value.trim().length > 0;
+        const actOk = sanitizeText(customActivityInput.value).length > 0;
+        const placeOk = sanitizeText(customPlaceInput.value).length > 0;
         btnConfirmCustom.disabled = !(actOk && placeOk);
       }
 
@@ -1371,8 +1407,8 @@
       customPlaceInput.addEventListener('input', validateCustomInputs);
 
       btnConfirmCustom.addEventListener('click', () => {
-        const act = customActivityInput.value.trim();
-        const plc = customPlaceInput.value.trim();
+        const act = sanitizeText(customActivityInput.value);
+        const plc = sanitizeText(customPlaceInput.value);
         if (!act || !plc) return;
         state.activity = act;
         state.place = plc;
@@ -1390,7 +1426,7 @@
       btnBackToStep2.addEventListener('click', () => showScreen('step2'));
       btnBackToStep2Top.addEventListener('click', () => showScreen('step2'));
 
-      // --- LOGICA STEP 3: CALENDARIO DINAMICO (OGGI -> 31 DIC 2028) ---
+      // --- LOGICA STEP 3: CALENDARIO DINAMICO ---
       const MAX_DATE_ISO = '2028-12-31';
 
       function getTodayLocalISO() {
@@ -1437,14 +1473,27 @@
         return Boolean(iso) && iso >= todayISO && iso <= MAX_DATE_ISO;
       }
 
+      function isValidTime(t) {
+        return /^\d{2}:\d{2}$/.test(t);
+      }
+
       function updateDatePreview() {
         const val = dateInput.value;
-        const time = timeInput.value || '17:30';
+        const time = timeInput.value;
         state.dateISO = val;
         state.timeStr = time;
 
         if (!isDateWithinRange(val)) {
           humanDatePreview.textContent = '⚠️ Seleziona una data valida';
+          dateErrorMsg.textContent = 'Scegli una data da oggi in poi 📅';
+          dateErrorMsg.style.display = 'block';
+          btnGenerateTicket.disabled = true;
+          return;
+        }
+
+        if (!isValidTime(time)) {
+          humanDatePreview.textContent = '⚠️ Seleziona un orario valido';
+          dateErrorMsg.textContent = 'Inserisci ora e minuti per l’appuntamento 🕒';
           dateErrorMsg.style.display = 'block';
           btnGenerateTicket.disabled = true;
           return;
@@ -1489,8 +1538,8 @@
       }
 
       btnGenerateTicket.addEventListener('click', () => {
-        if (!isDateWithinRange(state.dateISO) || !state.timeStr) {
-          dateErrorMsg.style.display = 'block';
+        if (!isDateWithinRange(state.dateISO) || !isValidTime(state.timeStr)) {
+          updateDatePreview();
           return;
         }
 
@@ -1500,6 +1549,11 @@
         ticketDate.textContent = niceDate;
         ticketTime.textContent = `Ore ${state.timeStr}`;
 
+        // Link WhatsApp dinamico (nessun numero di telefono salvato nel codice)
+        const encodedSummary = encodeURIComponent(buildSummaryText());
+        btnWhatsapp.href = `https://wa.me/?text=${encodedSummary}`;
+
+        // Link Google Calendar dinamico
         const { startStamp, endStamp } = buildCalendarDates();
         const title = encodeURIComponent(`${state.activity} (${state.place})`);
         const location = encodeURIComponent(state.place);
@@ -1509,8 +1563,14 @@
         showScreen('stepTicket');
       });
 
+      btnWhatsapp.addEventListener('click', (e) => {
+        if (!btnWhatsapp.href.startsWith('https://wa.me/?text=')) {
+          e.preventDefault();
+        }
+      });
+
       btnGoogleCal.addEventListener('click', (e) => {
-        if (!btnGoogleCal.href.startsWith('https://calendar.google.com/calendar/render')) {
+        if (!btnGoogleCal.href.startsWith('https://calendar.google.com/calendar/render?')) {
           e.preventDefault();
         }
       });
@@ -1520,14 +1580,7 @@
       btnEditActivity.addEventListener('click', () => showScreen('step2'));
       btnRestartAll.addEventListener('click', goBackToStep1);
 
-      // Condivisione WhatsApp (nessun numero nel codice; l'utente sceglie il contatto)
-      btnWhatsapp.addEventListener('click', () => {
-        const text = encodeURIComponent(buildSummaryText());
-        const waUrl = `https://api.whatsapp.com/send?text=${text}`;
-        window.open(waUrl, '_blank', 'noopener,noreferrer');
-      });
-
-      // Copia negli appunti (Clipboard API con fallback legacy @deprecated)
+      // Copia negli appunti (Clipboard API con fallback legacy)
       btnCopySummary.addEventListener('click', async () => {
         const text = buildSummaryText();
         if (navigator.clipboard && window.isSecureContext) {
@@ -1539,7 +1592,6 @@
             // Prosegue al fallback se i permessi clipboard sono negati
           }
         }
-        // @deprecated Fallback obsoleto solo per browser privi di navigator.clipboard
         const ta = document.createElement('textarea');
         ta.value = text;
         ta.setAttribute('readonly', '');
