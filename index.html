@@ -1,8 +1,19 @@
+<!--
+  PRIVACY & ARCHITETTURA (CLIENT-ONLY):
+  - Applicazione 100% statica client-side: nessun server proprietario, nessun database,
+    nessun cookie, nessun localStorage/sessionStorage e nessun tracciamento analitico.
+  - Nessun numero di telefono o dato personale è salvato nel codice sorgente.
+  - Gli unici dati che lasciano il browser sono quelli che l'utente sceglie volontariamente
+    di inviare cliccando sui pulsanti verso servizi di terze parti:
+    1) WhatsApp (Meta) tramite api.whatsapp.com/send
+    2) Google Calendar tramite calendar.google.com/calendar/render
+-->
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'none';" />
   <title>Ho una possibilità? 💌</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -597,7 +608,6 @@
       letter-spacing: 0.04em;
     }
 
-    /* Impilati su schermi stretti (iOS/Android) e affiancati da 480px in su */
     .picker-row {
       display: grid;
       grid-template-columns: 1fr;
@@ -626,7 +636,7 @@
       border: 1.5px solid #fecdd3;
       background: #ffffff;
       font-family: var(--font-sans);
-      font-size: 16px; /* Previene auto-zoom su iOS Safari */
+      font-size: 16px;
       font-weight: 600;
       color: var(--text-dark);
       outline: none;
@@ -759,7 +769,7 @@
     }
 
     .ticket-actions {
-      padding: 14px 22px 24px;
+      padding: 14px 22px 22px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -793,6 +803,14 @@
       .btn-secondary-soft:hover {
         background: #ffe4e6;
       }
+    }
+
+    .privacy-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.4;
+      margin-top: 4px;
     }
 
     .reset-link-wrap {
@@ -1053,13 +1071,17 @@
             Invia su WhatsApp 💬
           </button>
 
-          <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-soft" id="btnGoogleCal" style="text-decoration:none;">
+          <a href="about:blank" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-soft" id="btnGoogleCal" style="text-decoration:none;">
             🗓️ Aggiungi a Google Calendar
           </a>
 
           <button type="button" class="btn btn-secondary-soft" id="btnCopySummary">
             📋 Copia riepilogo
           </button>
+
+          <p class="privacy-note">
+            Nessun dato viene salvato online: le informazioni vengono inviate a WhatsApp o Google Calendar solo su tua azione.
+          </p>
         </div>
       </div>
 
@@ -1074,11 +1096,14 @@
 
   <script>
     (function () {
-      // --- CONFIGURAZIONE WHATSAPP SICURA ---
-      // Per aprire direttamente la TUA chat senza esporre il tuo numero in chiaro nel repository pubblico GitHub:
-      // codifica il tuo numero con prefisso internazionale (es. 393401234567) in Base64 e incollalo qui sotto.
-      // Se lo lasci vuoto (''), aprirà WhatsApp facendole selezionare il tuo contatto in rubrica.
-      const PHONE_ENCODED = '';
+      // --- DIFESA CLICKJACKING CLIENT-SIDE ---
+      try {
+        if (window.top !== window.self) {
+          window.top.location = window.self.location;
+        }
+      } catch {
+        document.documentElement.style.display = 'none';
+      }
 
       // --- STATO DELL'APPLICAZIONE ---
       const state = {
@@ -1237,7 +1262,7 @@
 
       function handleNoAttempt(e) {
         if (state.noDodges < state.maxDodges) {
-          e.preventDefault();
+          if (e.cancelable) e.preventDefault();
           e.stopPropagation();
           moveNoButtonRandomly();
         }
@@ -1257,7 +1282,6 @@
         confirmNoBox.classList.add('active');
       });
 
-      // Mantiene il pulsante "No" dentro i bordi se si ridimensiona la finestra su PC/Laptop
       window.addEventListener('resize', () => {
         if (!btnNo.classList.contains('escaping') || btnNo.style.display === 'none') return;
         const { vw, vh } = getSafeViewportSize();
@@ -1479,43 +1503,47 @@
         showScreen('stepTicket');
       });
 
+      btnGoogleCal.addEventListener('click', (e) => {
+        if (!btnGoogleCal.href.startsWith('https://calendar.google.com/')) {
+          e.preventDefault();
+        }
+      });
+
       // Pulsanti Indietro dalla schermata finale
       btnBackToStep3.addEventListener('click', () => showScreen('step3'));
       btnEditActivity.addEventListener('click', () => showScreen('step2'));
       btnRestartAll.addEventListener('click', goBackToStep1);
 
-      // Condivisione WhatsApp (sicura e compatibile iOS, Android, Desktop)
+      // Condivisione WhatsApp (nessun numero nel codice; l'utente sceglie il contatto)
       btnWhatsapp.addEventListener('click', () => {
         const text = encodeURIComponent(buildSummaryText());
-        let phone = '';
-        if (PHONE_ENCODED.trim()) {
-          try {
-            phone = atob(PHONE_ENCODED.trim()).replace(/\D/g, '');
-          } catch (e) {
-            phone = '';
-          }
-        }
-        const waUrl = phone
-          ? `https://api.whatsapp.com/send?phone=${phone}&text=${text}`
-          : `https://api.whatsapp.com/send?text=${text}`;
+        const waUrl = `https://api.whatsapp.com/send?text=${text}`;
         window.open(waUrl, '_blank', 'noopener,noreferrer');
       });
 
-      // Copia negli appunti
+      // Copia negli appunti (Clipboard API con fallback legacy @deprecated)
       btnCopySummary.addEventListener('click', async () => {
         const text = buildSummaryText();
-        try {
-          await navigator.clipboard.writeText(text);
-          showToast('Riepilogo copiato! Incollalo su WhatsApp 💌');
-        } catch {
-          const ta = document.createElement('textarea');
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          ta.remove();
-          showToast('Riepilogo copiato! 💌');
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(text);
+            showToast('Riepilogo copiato! Incollalo su WhatsApp 💌');
+            return;
+          } catch {
+            // Prosegue al fallback se i permessi clipboard sono negati
+          }
         }
+        // @deprecated Fallback obsoleto solo per browser privi di navigator.clipboard
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('Riepilogo copiato! 💌');
       });
 
       let toastTimer;
