@@ -160,6 +160,45 @@
       }
     }
 
+    /* Barra superiore con pulsante Indietro */
+    .card-nav-top {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .btn-back-step {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: var(--rose-dark);
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+      user-select: none;
+    }
+
+    .btn-back-step:hover {
+      background: #ffe4e6;
+    }
+
+    .btn-back-step:active {
+      transform: scale(0.95);
+    }
+
+    .ticket-top .btn-back-step {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: #fecdd3;
+    }
+
     /* Card Step 1 (Glassmorphism intenso) */
     .glass-card {
       background: rgba(255, 255, 255, 0.14);
@@ -179,7 +218,7 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 228, 230, 0.9);
       border-radius: 28px;
-      padding: 28px 22px;
+      padding: 22px 22px 28px;
       box-shadow: var(--shadow-soft);
     }
 
@@ -192,7 +231,7 @@
       font-size: 0.78rem;
       font-weight: 600;
       letter-spacing: 0.03em;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .glass-card .badge-pill {
@@ -498,7 +537,7 @@
       border: none;
       color: var(--rose-primary);
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       cursor: pointer;
       text-decoration: underline;
       flex-shrink: 0;
@@ -578,7 +617,7 @@
 
     .ticket-top {
       background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
-      padding: 24px 22px 20px;
+      padding: 18px 22px 20px;
       text-align: center;
       border-bottom: 1px solid #fecdd3;
     }
@@ -702,8 +741,12 @@
     }
 
     .reset-link-wrap {
-      text-align: center;
-      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 16px;
+      flex-wrap: wrap;
     }
 
     /* Toast notifica copia */
@@ -788,7 +831,7 @@
                 Ok dai, clicco Sì 😊
               </button>
               <button type="button" class="btn btn-ghost-white" id="btnBackToStart">
-                Torna all'inizio
+                ← Torna all'inizio
               </button>
             </div>
           </div>
@@ -799,6 +842,10 @@
     <!-- ==================== STEP 2 ==================== -->
     <section id="step2" class="screen">
       <div class="soft-card">
+        <div class="card-nav-top">
+          <button type="button" class="btn-back-step" id="btnBackToStep1">← Indietro</button>
+        </div>
+
         <div class="step-header">
           <span class="badge-pill">Step 1 di 2 • Il programma</span>
           <h2 class="step-title">Cosa vorresti fare?</h2>
@@ -869,6 +916,10 @@
     <!-- ==================== STEP 3: CALENDARIO ==================== -->
     <section id="step3" class="screen">
       <div class="soft-card">
+        <div class="card-nav-top">
+          <button type="button" class="btn-back-step" id="btnBackToStep2Top">← Indietro</button>
+        </div>
+
         <div class="step-header">
           <span class="badge-pill">Step 2 di 2 • Data e ora</span>
           <h2 class="step-title">Quando ci vediamo?</h2>
@@ -911,6 +962,9 @@
     <section id="stepTicket" class="screen">
       <div class="ticket-wrapper">
         <div class="ticket-top">
+          <div class="card-nav-top">
+            <button type="button" class="btn-back-step" id="btnBackToStep3">← Indietro</button>
+          </div>
           <span class="ticket-stamp">Invito Ufficiale Confermato</span>
           <h2 class="ticket-title">Il nostro appuntamento ✨</h2>
         </div>
@@ -959,7 +1013,8 @@
       </div>
 
       <div class="reset-link-wrap">
-        <button type="button" class="link-back" id="btnEditAll">← Modifica attività o data</button>
+        <button type="button" class="link-back" id="btnEditActivity">Cambia attività</button>
+        <button type="button" class="link-back" id="btnRestartAll">↺ Torna all'inizio</button>
       </div>
     </section>
   </main>
@@ -1002,6 +1057,7 @@
       const btnBackToStart = document.getElementById('btnBackToStart');
 
       // Step 2
+      const btnBackToStep1 = document.getElementById('btnBackToStep1');
       const optionBtns = document.querySelectorAll('.option-btn[data-activity]');
       const btnOtherOption = document.getElementById('btnOtherOption');
       const customDrawer = document.getElementById('customDrawer');
@@ -1010,6 +1066,7 @@
       const btnConfirmCustom = document.getElementById('btnConfirmCustom');
 
       // Step 3
+      const btnBackToStep2Top = document.getElementById('btnBackToStep2Top');
       const step3ChoicePreview = document.getElementById('step3ChoicePreview');
       const btnBackToStep2 = document.getElementById('btnBackToStep2');
       const dateInput = document.getElementById('dateInput');
@@ -1019,6 +1076,7 @@
       const btnGenerateTicket = document.getElementById('btnGenerateTicket');
 
       // Ticket Finale
+      const btnBackToStep3 = document.getElementById('btnBackToStep3');
       const ticketActivity = document.getElementById('ticketActivity');
       const ticketPlace = document.getElementById('ticketPlace');
       const ticketDate = document.getElementById('ticketDate');
@@ -1027,7 +1085,8 @@
       const btnDownloadIcs = document.getElementById('btnDownloadIcs');
       const btnGoogleCal = document.getElementById('btnGoogleCal');
       const btnCopySummary = document.getElementById('btnCopySummary');
-      const btnEditAll = document.getElementById('btnEditAll');
+      const btnEditActivity = document.getElementById('btnEditActivity');
+      const btnRestartAll = document.getElementById('btnRestartAll');
       const toast = document.getElementById('toast');
 
       // --- CUORI FLUTTUANTI DI SFONDO ---
@@ -1065,7 +1124,6 @@
       ];
 
       function moveNoButtonRandomly() {
-        // Sposta il pulsante direttamente nel body così position:fixed è sempre riferito all'intero schermo
         if (btnNo.parentElement !== body) {
           body.appendChild(btnNo);
         }
@@ -1123,11 +1181,9 @@
         }
       }
 
-      // Desktop hover & Mobile touch
       btnNo.addEventListener('mouseenter', handleNoAttempt);
       btnNo.addEventListener('touchstart', handleNoAttempt, { passive: false });
 
-      // Click effettivo dopo le 3 fughe
       btnNo.addEventListener('click', (e) => {
         if (state.noDodges < state.maxDodges) {
           handleNoAttempt(e);
@@ -1155,8 +1211,15 @@
         }
       }
 
+      function goBackToStep1() {
+        body.classList.remove('soft-theme');
+        resetStep1();
+        showScreen('step1');
+      }
+
       btnReconsider.addEventListener('click', resetStep1);
       btnBackToStart.addEventListener('click', resetStep1);
+      btnBackToStep1.addEventListener('click', goBackToStep1);
 
       btnConfirmNoFinal.addEventListener('click', () => {
         confirmNoBox.classList.remove('active');
@@ -1220,9 +1283,8 @@
         showScreen('step3');
       }
 
-      btnBackToStep2.addEventListener('click', () => {
-        showScreen('step2');
-      });
+      btnBackToStep2.addEventListener('click', () => showScreen('step2'));
+      btnBackToStep2Top.addEventListener('click', () => showScreen('step2'));
 
       // --- LOGICA STEP 3: CALENDARIO DINAMICO (OGGI -> 31 DIC 2028) ---
       const MAX_DATE_ISO = '2028-12-31';
@@ -1253,7 +1315,6 @@
         dateInput.min = todayISO;
         dateInput.max = MAX_DATE_ISO;
 
-        // Pre-imposta domani (o oggi se siamo già al limite)
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tY = tomorrow.getFullYear();
@@ -1314,7 +1375,7 @@
         const [y, m, d] = state.dateISO.split('-').map(Number);
         const [hh, mm] = state.timeStr.split(':').map(Number);
         const start = new Date(y, m - 1, d, hh, mm, 0);
-        const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // Durata 2 ore
+        const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
 
         const pad = n => String(n).padStart(2, '0');
         const toCalStamp = dt =>
@@ -1335,7 +1396,6 @@
         ticketDate.textContent = niceDate;
         ticketTime.textContent = `Ore ${state.timeStr}`;
 
-        // Link Google Calendar
         const { startStamp, endStamp } = buildCalendarDates();
         const title = encodeURIComponent(`${state.activity} (${state.place})`);
         const location = encodeURIComponent(state.place);
@@ -1344,6 +1404,11 @@
 
         showScreen('stepTicket');
       });
+
+      // Pulsanti Indietro dalla schermata finale
+      btnBackToStep3.addEventListener('click', () => showScreen('step3'));
+      btnEditActivity.addEventListener('click', () => showScreen('step2'));
+      btnRestartAll.addEventListener('click', goBackToStep1);
 
       // Download file .ics (iPhone / Android / Outlook)
       btnDownloadIcs.addEventListener('click', () => {
@@ -1401,10 +1466,6 @@
           ta.remove();
           showToast('Riepilogo copiato! 💌');
         }
-      });
-
-      btnEditAll.addEventListener('click', () => {
-        showScreen('step2');
       });
 
       let toastTimer;
