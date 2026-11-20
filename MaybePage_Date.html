@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ho una possibilità? 💌</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Palette Step 1 */
+      --bg-step1: linear-gradient(135deg, #ff2a6d 0%, #d90429 48%, #720927 100%);
+      /* Palette Step 2 & 3 */
+      --bg-step2: linear-gradient(135deg, #fff5f6 0%, #ffe4e8 50%, #ffedd8 100%);
+
+      --rose-primary: #e11d48;
+      --rose-dark: #9f1239;
+      --rose-soft: #ffe4e6;
+      --text-dark: #2b1922;
+      --text-muted: #6e4e5c;
+      --shadow-soft: 0 20px 45px -15px rgba(136, 19, 55, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+    }
+
+    body {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      background: var(--bg-step1);
+      color: #ffffff;
+      transition: background 1.1s cubic-bezier(0.22, 1, 0.36, 1), color 0.6s ease;
+    }
+
+    body.soft-theme {
+      background: var(--bg-step2);
+      color: var(--text-dark);
+    }
+
+    /* Sfondo animato con sfumature e cuori fluttuanti */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.45;
+      animation: floatOrb 12s ease-in-out infinite alternate;
+      transition: background 1.1s ease, opacity 1.1s ease;
+    }
+
+    .glow-orb.one {
+      width: 280px;
+      height: 280px;
+      background: #ff758f;
+      top: -60px;
+      left: -60px;
+    }
+
+    .glow-orb.two {
+      width: 320px;
+      height: 320px;
+      background: #ffccd5;
+      bottom: -80px;
+      right: -60px;
+      animation-delay: -5s;
+    }
+
+    body.soft-theme .glow-orb.one {
+      background: #fecdd3;
+      opacity: 0.65;
+    }
+
+    body.soft-theme .glow-orb.two {
+      background: #fed7aa;
+      opacity: 0.65;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 25px) scale(1.12); }
+    }
+
+    .floating-heart {
+      position: absolute;
+      bottom: -40px;
+      user-select: none;
+      pointer-events: none;
+      animation: riseHeart linear forwards;
+      opacity: 0;
+    }
+
+    @keyframes riseHeart {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.65;
+      }
+      85% {
+        opacity: 0.45;
+      }
+      100% {
+        transform: translateY(-110dvh) rotate(28deg) scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    /* Contenitore principale */
+    .app-shell {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeSlideIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Card Step 1 (Glassmorphism intenso) */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 28px;
+      padding: 36px 24px 32px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(76, 5, 25, 0.45);
+    }
+
+    /* Card Step 2 & 3 (Pastello luminoso) */
+    .soft-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 228, 230, 0.9);
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 16px;
+    }
+
+    .glass-card .badge-pill {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff0f3;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .soft-card .badge-pill {
+      background: #fff1f2;
+      color: var(--rose-primary);
+      border: 1px solid #fecdd3;
+    }
+
+    h1, h2 {
+      font-family: var(--font-serif);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .step1-title {
+      font-size: clamp(2rem, 7vw, 2.55rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-shadow: 0 4px 18px rgba(100, 0, 25, 0.25);
+    }
+
+    .step1-subtitle {
+      font-size: 0.96rem;
+      color: rgba(255, 240, 243, 0.9);
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    /* Pulsanti Step 1 */
+    .step1-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      min-height: 58px;
+      position: relative;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 16px;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-yes {
+      background: #ffffff;
+      color: #d90429;
+      padding: 15px 34px;
+      font-size: 1.08rem;
+      box-shadow: 0 12px 28px rgba(89, 13, 34, 0.32);
+      animation: subtlePulse 2.4s infinite;
+    }
+
+    .btn-yes:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 16px 32px rgba(89, 13, 34, 0.4);
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% { box-shadow: 0 12px 28px rgba(89, 13, 34, 0.32), 0 0 0 0 rgba(255, 255, 255, 0.45); }
+      50% { box-shadow: 0 12px 28px rgba(89, 13, 34, 0.32), 0 0 0 10px rgba(255, 255, 255, 0); }
+    }
+
+    .btn-no {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      padding: 14px 28px;
+      font-size: 1rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .btn-no.escaping {
+      position: fixed;
+      z-index: 999;
+      margin: 0;
+      transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.28s cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s ease;
+      box-shadow: 0 10px 25px rgba(89, 13, 34, 0.38);
+      background: rgba(159, 18, 57, 0.85);
+    }
+
+    .btn-no.caught {
+      background: rgba(255, 255, 255, 0.24);
+      border-color: #ffffff;
+    }
+
+    .dodge-hint {
+      margin-top: 18px;
+      min-height: 22px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: #ffe5ec;
+      opacity: 0.95;
+      transition: opacity 0.25s ease;
+    }
+
+    /* Stati alternativi Step 1 (Conferma & Resa) */
+    .sub-state {
+      display: none;
+      margin-top: 8px;
+      animation: fadeSlideIn 0.35s ease forwards;
+    }
+
+    .sub-state.active {
+      display: block;
+    }
+
+    .sub-state-box {
+      background: rgba(114, 9, 39, 0.38);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      padding: 22px 18px;
+      margin-top: 12px;
+    }
+
+    .sub-state-title {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      margin-bottom: 8px;
+    }
+
+    .sub-state-text {
+      font-size: 0.92rem;
+      color: rgba(255, 240, 243, 0.9);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .sub-state-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-ghost-white {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 13px 18px;
+      width: 100%;
+    }
+
+    /* Step 2: Scelta attività */
+    .step-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .step-title {
+      font-size: 1.75rem;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .step-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .option-btn {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #ffe4e6;
+      border-radius: 18px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      box-shadow: 0 4px 14px rgba(225, 29, 72, 0.05);
+    }
+
+    .option-btn:hover, .option-btn.selected {
+      border-color: var(--rose-primary);
+      background: #fff1f2;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(225, 29, 72, 0.12);
+    }
+
+    .option-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: #ffe4e6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .option-label {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: block;
+    }
+
+    .option-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* Form "Altro" */
+    .custom-drawer {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed #fecdd3;
+      animation: fadeSlideIn 0.35s ease forwards;
+    }
+
+    .custom-drawer.open {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1.5px solid #fecdd3;
+      background: #fffafb;
+      font-family: var(--font-sans);
+      font-size: 16px; /* Previene zoom automatico su iOS */
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .text-input:focus {
+      border-color: var(--rose-primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+    }
+
+    .btn-primary-rose {
+      width: 100%;
+      padding: 15px 20px;
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(225, 29, 72, 0.26);
+    }
+
+    .btn-primary-rose:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Step 3: Calendario */
+    .selected-recap-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      font-size: 0.86rem;
+      color: var(--rose-dark);
+    }
+
+    .link-back {
+      background: none;
+      border: none;
+      color: var(--rose-primary);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: underline;
+      flex-shrink: 0;
+    }
+
+    .datetime-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .picker-row {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 10px;
+    }
+
+    .styled-picker {
+      width: 100%;
+      padding: 14px 12px;
+      border-radius: 14px;
+      border: 1.5px solid #fecdd3;
+      background: #ffffff;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .styled-picker:focus {
+      border-color: var(--rose-primary);
+      box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+    }
+
+    .date-preview-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .error-msg {
+      color: #e11d48;
+      font-size: 0.83rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: center;
+      display: none;
+    }
+
+    /* Schermata Finale: Biglietto / Invito Ufficiale */
+    .ticket-wrapper {
+      background: #ffffff;
+      border-radius: 26px;
+      box-shadow: 0 24px 50px -12px rgba(159, 18, 57, 0.22);
+      overflow: hidden;
+      border: 1px solid #ffe4e6;
+    }
+
+    .ticket-top {
+      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+      padding: 24px 22px 20px;
+      text-align: center;
+      border-bottom: 1px solid #fecdd3;
+    }
+
+    .ticket-stamp {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rose-primary);
+      border: 1.5px solid var(--rose-primary);
+      border-radius: 999px;
+      padding: 4px 12px;
+      margin-bottom: 10px;
+    }
+
+    .ticket-title {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      color: var(--text-dark);
+    }
+
+    .ticket-body {
+      padding: 22px;
+    }
+
+    .ticket-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #fff1f2;
+    }
+
+    .ticket-row:last-child {
+      border-bottom: none;
+    }
+
+    .ticket-key {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .ticket-val {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-align: right;
+    }
+
+    /* Separatore perforato stile biglietto */
+    .ticket-divider {
+      position: relative;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+    }
+
+    .ticket-divider::before,
+    .ticket-divider::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffe9ec;
+      top: 0;
+    }
+
+    .ticket-divider::before { left: -12px; }
+    .ticket-divider::after { right: -12px; }
+
+    .ticket-dashed-line {
+      width: 100%;
+      border-top: 2px dashed #fecdd3;
+      margin: 0 18px;
+    }
+
+    .ticket-actions {
+      padding: 14px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-whatsapp {
+      width: 100%;
+      padding: 15px 18px;
+      background: #25D366;
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(37, 211, 102, 0.28);
+    }
+
+    .btn-whatsapp:hover {
+      background: #20bd5a;
+    }
+
+    .btn-calendar-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .btn-secondary-soft {
+      padding: 13px 12px;
+      background: #fff1f2;
+      color: var(--rose-dark);
+      border: 1px solid #fecdd3;
+      font-size: 0.86rem;
+    }
+
+    .btn-secondary-soft:hover {
+      background: #ffe4e6;
+    }
+
+    .reset-link-wrap {
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* Toast notifica copia */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #2b1922;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 2000;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sfondo animato -->
+  <div class="ambient-bg" id="ambientBg">
+    <div class="glow-orb one"></div>
+    <div class="glow-orb two"></div>
+  </div>
+
+  <main class="app-shell">
+    <!-- ==================== STEP 1 ==================== -->
+    <section id="step1" class="screen active">
+      <div class="glass-card">
+        <span class="badge-pill">✨ Un invito speciale per te</span>
+        <h1 class="step1-title">Ho una possibilità?</h1>
+        <p class="step1-subtitle" id="step1Subtitle">
+          Prometto che non ti porterò in un posto noioso. Scegli con attenzione...
+        </p>
+
+        <!-- Pulsanti principali Step 1 -->
+        <div class="step1-actions" id="step1MainControls">
+          <button type="button" class="btn btn-yes" id="btnYes">Sì 💕</button>
+          <button type="button" class="btn btn-no" id="btnNo">No</button>
+        </div>
+
+        <p class="dodge-hint" id="dodgeHint"></p>
+
+        <!-- Conferma 1 dopo 3 fughe -->
+        <div class="sub-state" id="confirmNoBox">
+          <div class="sub-state-box">
+            <h3 class="sub-state-title">Sei davvero sicura? 🥺</h3>
+            <p class="sub-state-text">
+              Pensaci un attimo: potrebbe essere l'inizio di una bellissima giornata!
+            </p>
+            <div class="sub-state-buttons">
+              <button type="button" class="btn btn-yes" style="width:100%; animation:none;" id="btnReconsider">
+                Ci ripenso, torniamo indietro 💕
+              </button>
+              <button type="button" class="btn btn-ghost-white" id="btnConfirmNoFinal">
+                Sì, sono sicura
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messaggio finale di resa ironica -->
+        <div class="sub-state" id="surrenderBox">
+          <div class="sub-state-box">
+            <h3 class="sub-state-title">Ok, mi arrendo 🏳️</h3>
+            <p class="sub-state-text">
+              Hai vinto tu! Ma se per caso dovessi cambiare idea, questo pulsante qui sotto resta sempre valido...
+            </p>
+            <div class="sub-state-buttons">
+              <button type="button" class="btn btn-yes" style="width:100%;" id="btnYesAfterSurrender">
+                Ok dai, clicco Sì 😊
+              </button>
+              <button type="button" class="btn btn-ghost-white" id="btnBackToStart">
+                Torna all'inizio
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== STEP 2 ==================== -->
+    <section id="step2" class="screen">
+      <div class="soft-card">
+        <div class="step-header">
+          <span class="badge-pill">Step 1 di 2 • Il programma</span>
+          <h2 class="step-title">Cosa vorresti fare?</h2>
+          <p class="step-subtitle">Scegli l'idea che ti ispira di più</p>
+        </div>
+
+        <div class="options-grid">
+          <button type="button" class="option-btn" data-activity="Gita in Montagna" data-place="Montagna">
+            <span class="option-icon">🏔️</span>
+            <span>
+              <span class="option-label">Montagna</span>
+              <span class="option-desc">Aria fresca, panorama e zero stress</span>
+            </span>
+          </button>
+
+          <button type="button" class="option-btn" data-activity="Passeggiata" data-place="Ferrara">
+            <span class="option-icon">🏰</span>
+            <span>
+              <span class="option-label">Passeggiata a Ferrara</span>
+              <span class="option-desc">Tra le mura, il centro storico e quattro chiacchiere</span>
+            </span>
+          </button>
+
+          <button type="button" class="option-btn" data-activity="Pranzo con gelato" data-place="Padova">
+            <span class="option-icon">🍨</span>
+            <span>
+              <span class="option-label">Pranzo con gelato a Padova</span>
+              <span class="option-desc">Buon cibo, Prato della Valle e gelato finale</span>
+            </span>
+          </button>
+
+          <button type="button" class="option-btn" id="btnOtherOption">
+            <span class="option-icon">✨</span>
+            <span>
+              <span class="option-label">Altro</span>
+              <span class="option-desc">Proponi tu l'attività e il posto perfetto</span>
+            </span>
+          </button>
+        </div>
+
+        <!-- Drawer opzione "Altro" -->
+        <div class="custom-drawer" id="customDrawer">
+          <div class="input-group">
+            <input
+              type="text"
+              id="customActivityInput"
+              class="text-input"
+              placeholder="Cosa vuoi fare?"
+              autocomplete="off"
+            />
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              id="customPlaceInput"
+              class="text-input"
+              placeholder="Luogo?"
+              autocomplete="off"
+            />
+          </div>
+          <button type="button" class="btn btn-primary-rose" id="btnConfirmCustom" disabled>
+            Conferma
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== STEP 3: CALENDARIO ==================== -->
+    <section id="step3" class="screen">
+      <div class="soft-card">
+        <div class="step-header">
+          <span class="badge-pill">Step 2 di 2 • Data e ora</span>
+          <h2 class="step-title">Quando ci vediamo?</h2>
+          <p class="step-subtitle">Scegli giorno, mese, anno e orario</p>
+        </div>
+
+        <div class="selected-recap-chip">
+          <span id="step3ChoicePreview">✨ Scelta selezionata</span>
+          <button type="button" class="link-back" id="btnBackToStep2">Cambia</button>
+        </div>
+
+        <div class="datetime-grid">
+          <div class="picker-row">
+            <div>
+              <label class="field-label" for="dateInput">Giorno / Mese / Anno</label>
+              <input type="date" id="dateInput" class="styled-picker" />
+            </div>
+            <div>
+              <label class="field-label" for="timeInput">Ora e Minuti</label>
+              <input type="time" id="timeInput" class="styled-picker" value="17:30" />
+            </div>
+          </div>
+        </div>
+
+        <div class="date-preview-box" id="humanDatePreview">
+          Seleziona una data valida
+        </div>
+
+        <p class="error-msg" id="dateErrorMsg">
+          Scegli una data compresa tra oggi e il 31 dicembre 2028.
+        </p>
+
+        <button type="button" class="btn btn-primary-rose" id="btnGenerateTicket">
+          Conferma appuntamento 🎟️
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SCHERMATA FINALE: INVITO UFFICIALE ==================== -->
+    <section id="stepTicket" class="screen">
+      <div class="ticket-wrapper">
+        <div class="ticket-top">
+          <span class="ticket-stamp">Invito Ufficiale Confermato</span>
+          <h2 class="ticket-title">Il nostro appuntamento ✨</h2>
+        </div>
+
+        <div class="ticket-body">
+          <div class="ticket-row">
+            <span class="ticket-key">Attività</span>
+            <span class="ticket-val" id="ticketActivity">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-key">Luogo</span>
+            <span class="ticket-val" id="ticketPlace">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-key">Data</span>
+            <span class="ticket-val" id="ticketDate">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-key">Orario</span>
+            <span class="ticket-val" id="ticketTime">—</span>
+          </div>
+        </div>
+
+        <div class="ticket-divider">
+          <div class="ticket-dashed-line"></div>
+        </div>
+
+        <div class="ticket-actions">
+          <button type="button" class="btn btn-whatsapp" id="btnWhatsapp">
+            Invia su WhatsApp 💬
+          </button>
+
+          <div class="btn-calendar-row">
+            <button type="button" class="btn btn-secondary-soft" id="btnDownloadIcs">
+              📅 Salva (.ics)
+            </button>
+            <a href="#" target="_blank" rel="noopener" class="btn btn-secondary-soft" id="btnGoogleCal" style="text-decoration:none;">
+              🗓️ Google Cal
+            </a>
+          </div>
+
+          <button type="button" class="btn btn-secondary-soft" id="btnCopySummary">
+            📋 Copia riepilogo
+          </button>
+        </div>
+      </div>
+
+      <div class="reset-link-wrap">
+        <button type="button" class="link-back" id="btnEditAll">← Modifica attività o data</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Copiato negli appunti!</div>
+
+  <script>
+    (function () {
+      // --- STATO DELL'APPLICAZIONE ---
+      const state = {
+        noDodges: 0,
+        maxDodges: 3,
+        activity: '',
+        place: '',
+        dateISO: '',     // YYYY-MM-DD
+        timeStr: '17:30' // HH:MM
+      };
+
+      // --- RIFERIMENTI DOM ---
+      const body = document.body;
+      const ambientBg = document.getElementById('ambientBg');
+
+      const screens = {
+        step1: document.getElementById('step1'),
+        step2: document.getElementById('step2'),
+        step3: document.getElementById('step3'),
+        stepTicket: document.getElementById('stepTicket')
+      };
+
+      // Step 1
+      const btnYes = document.getElementById('btnYes');
+      const btnNo = document.getElementById('btnNo');
+      const step1MainControls = document.getElementById('step1MainControls');
+      const dodgeHint = document.getElementById('dodgeHint');
+      const confirmNoBox = document.getElementById('confirmNoBox');
+      const surrenderBox = document.getElementById('surrenderBox');
+      const btnReconsider = document.getElementById('btnReconsider');
+      const btnConfirmNoFinal = document.getElementById('btnConfirmNoFinal');
+      const btnYesAfterSurrender = document.getElementById('btnYesAfterSurrender');
+      const btnBackToStart = document.getElementById('btnBackToStart');
+
+      // Step 2
+      const optionBtns = document.querySelectorAll('.option-btn[data-activity]');
+      const btnOtherOption = document.getElementById('btnOtherOption');
+      const customDrawer = document.getElementById('customDrawer');
+      const customActivityInput = document.getElementById('customActivityInput');
+      const customPlaceInput = document.getElementById('customPlaceInput');
+      const btnConfirmCustom = document.getElementById('btnConfirmCustom');
+
+      // Step 3
+      const step3ChoicePreview = document.getElementById('step3ChoicePreview');
+      const btnBackToStep2 = document.getElementById('btnBackToStep2');
+      const dateInput = document.getElementById('dateInput');
+      const timeInput = document.getElementById('timeInput');
+      const humanDatePreview = document.getElementById('humanDatePreview');
+      const dateErrorMsg = document.getElementById('dateErrorMsg');
+      const btnGenerateTicket = document.getElementById('btnGenerateTicket');
+
+      // Ticket Finale
+      const ticketActivity = document.getElementById('ticketActivity');
+      const ticketPlace = document.getElementById('ticketPlace');
+      const ticketDate = document.getElementById('ticketDate');
+      const ticketTime = document.getElementById('ticketTime');
+      const btnWhatsapp = document.getElementById('btnWhatsapp');
+      const btnDownloadIcs = document.getElementById('btnDownloadIcs');
+      const btnGoogleCal = document.getElementById('btnGoogleCal');
+      const btnCopySummary = document.getElementById('btnCopySummary');
+      const btnEditAll = document.getElementById('btnEditAll');
+      const toast = document.getElementById('toast');
+
+      // --- CUORI FLUTTUANTI DI SFONDO ---
+      function spawnHeart() {
+        const heart = document.createElement('span');
+        heart.className = 'floating-heart';
+        const isSoft = body.classList.contains('soft-theme');
+        const symbols = isSoft ? ['🌸', '💕', '✨', '🤍'] : ['❤️', '💖', '💕', '✨'];
+        heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        heart.style.left = Math.random() * 96 + 'vw';
+        heart.style.fontSize = (14 + Math.random() * 14) + 'px';
+        const duration = 7 + Math.random() * 6;
+        heart.style.animationDuration = duration + 's';
+        ambientBg.appendChild(heart);
+        setTimeout(() => heart.remove(), duration * 1000);
+      }
+      setInterval(spawnHeart, 1300);
+      for (let i = 0; i < 5; i++) setTimeout(spawnHeart, i * 350);
+
+      // --- NAVIGAZIONE TRA STEP ---
+      function showScreen(name) {
+        Object.values(screens).forEach(s => s.classList.remove('active'));
+        screens[name].classList.add('active');
+
+        if (name !== 'step1') {
+          btnNo.style.display = 'none';
+        }
+      }
+
+      // --- LOGICA STEP 1: PULSANTE "NO" CHE SCAPPA 3 VOLTE ---
+      const dodgePhrases = [
+        'Ops, troppo lenta! 😜',
+        'Ci hai quasi preso... riprova! 👀',
+        'Ultimo scatto! Adesso non scappo più...'
+      ];
+
+      function moveNoButtonRandomly() {
+        // Sposta il pulsante direttamente nel body così position:fixed è sempre riferito all'intero schermo
+        if (btnNo.parentElement !== body) {
+          body.appendChild(btnNo);
+        }
+
+        btnNo.classList.add('escaping');
+
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const btnRect = btnNo.getBoundingClientRect();
+        const yesRect = btnYes.getBoundingClientRect();
+
+        const pad = 20;
+        const maxX = Math.max(pad, vw - btnRect.width - pad);
+        const maxY = Math.max(pad, vh - btnRect.height - pad);
+
+        let targetX = pad;
+        let targetY = pad;
+        let attempts = 0;
+
+        do {
+          targetX = pad + Math.random() * (maxX - pad);
+          targetY = pad + Math.random() * (maxY - pad);
+          attempts++;
+
+          const distFromCurrent = Math.hypot(targetX - btnRect.left, targetY - btnRect.top);
+          const overlapsYes = !(
+            targetX + btnRect.width + 12 < yesRect.left ||
+            targetX - 12 > yesRect.right ||
+            targetY + btnRect.height + 12 < yesRect.top ||
+            targetY - 12 > yesRect.bottom
+          );
+
+          if (distFromCurrent > 85 && !overlapsYes) break;
+        } while (attempts < 25);
+
+        btnNo.style.left = Math.round(targetX) + 'px';
+        btnNo.style.top = Math.round(targetY) + 'px';
+
+        dodgeHint.textContent = dodgePhrases[state.noDodges] || '';
+        state.noDodges++;
+
+        if (state.noDodges >= state.maxDodges) {
+          setTimeout(() => {
+            btnNo.classList.add('caught');
+            dodgeHint.textContent = 'Ok, mi sono fermato. Ora puoi cliccarlo... se vuoi 😅';
+          }, 300);
+        }
+      }
+
+      function handleNoAttempt(e) {
+        if (state.noDodges < state.maxDodges) {
+          e.preventDefault();
+          e.stopPropagation();
+          moveNoButtonRandomly();
+        }
+      }
+
+      // Desktop hover & Mobile touch
+      btnNo.addEventListener('mouseenter', handleNoAttempt);
+      btnNo.addEventListener('touchstart', handleNoAttempt, { passive: false });
+
+      // Click effettivo dopo le 3 fughe
+      btnNo.addEventListener('click', (e) => {
+        if (state.noDodges < state.maxDodges) {
+          handleNoAttempt(e);
+          return;
+        }
+        btnNo.style.display = 'none';
+        step1MainControls.style.display = 'none';
+        dodgeHint.textContent = '';
+        confirmNoBox.classList.add('active');
+      });
+
+      function resetStep1() {
+        state.noDodges = 0;
+        confirmNoBox.classList.remove('active');
+        surrenderBox.classList.remove('active');
+        step1MainControls.style.display = 'flex';
+        dodgeHint.textContent = '';
+
+        btnNo.classList.remove('escaping', 'caught');
+        btnNo.style.left = '';
+        btnNo.style.top = '';
+        btnNo.style.display = 'inline-flex';
+        if (btnNo.parentElement !== step1MainControls) {
+          step1MainControls.appendChild(btnNo);
+        }
+      }
+
+      btnReconsider.addEventListener('click', resetStep1);
+      btnBackToStart.addEventListener('click', resetStep1);
+
+      btnConfirmNoFinal.addEventListener('click', () => {
+        confirmNoBox.classList.remove('active');
+        surrenderBox.classList.add('active');
+      });
+
+      function goToStep2() {
+        body.classList.add('soft-theme');
+        btnNo.style.display = 'none';
+        for (let i = 0; i < 8; i++) setTimeout(spawnHeart, i * 100);
+        showScreen('step2');
+      }
+
+      btnYes.addEventListener('click', goToStep2);
+      btnYesAfterSurrender.addEventListener('click', goToStep2);
+
+      // --- LOGICA STEP 2: SCELTA ATTIVITÀ ---
+      optionBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          optionBtns.forEach(b => b.classList.remove('selected'));
+          btnOtherOption.classList.remove('selected');
+          btn.classList.add('selected');
+          customDrawer.classList.remove('open');
+
+          state.activity = btn.dataset.activity;
+          state.place = btn.dataset.place;
+          proceedToStep3();
+        });
+      });
+
+      btnOtherOption.addEventListener('click', () => {
+        optionBtns.forEach(b => b.classList.remove('selected'));
+        btnOtherOption.classList.add('selected');
+        customDrawer.classList.add('open');
+        customActivityInput.focus();
+      });
+
+      function validateCustomInputs() {
+        const actOk = customActivityInput.value.trim().length > 0;
+        const placeOk = customPlaceInput.value.trim().length > 0;
+        btnConfirmCustom.disabled = !(actOk && placeOk);
+      }
+
+      customActivityInput.addEventListener('input', validateCustomInputs);
+      customPlaceInput.addEventListener('input', validateCustomInputs);
+
+      btnConfirmCustom.addEventListener('click', () => {
+        const act = customActivityInput.value.trim();
+        const plc = customPlaceInput.value.trim();
+        if (!act || !plc) return;
+        state.activity = act;
+        state.place = plc;
+        proceedToStep3();
+      });
+
+      function proceedToStep3() {
+        const label = state.activity.toLowerCase().includes(state.place.toLowerCase())
+          ? state.activity
+          : `${state.activity} • ${state.place}`;
+        step3ChoicePreview.textContent = `✨ ${label}`;
+        showScreen('step3');
+      }
+
+      btnBackToStep2.addEventListener('click', () => {
+        showScreen('step2');
+      });
+
+      // --- LOGICA STEP 3: CALENDARIO DINAMICO (OGGI -> 31 DIC 2028) ---
+      const MAX_DATE_ISO = '2028-12-31';
+
+      function getTodayLocalISO() {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      function formatItalianDate(isoDate) {
+        if (!isoDate) return '';
+        const [y, m, d] = isoDate.split('-').map(Number);
+        const dateObj = new Date(y, m - 1, d);
+        const formatted = dateObj.toLocaleDateString('it-IT', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+        return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+      }
+
+      function initCalendarBounds() {
+        const todayISO = getTodayLocalISO();
+        dateInput.min = todayISO;
+        dateInput.max = MAX_DATE_ISO;
+
+        // Pre-imposta domani (o oggi se siamo già al limite)
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tY = tomorrow.getFullYear();
+        const tM = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const tD = String(tomorrow.getDate()).padStart(2, '0');
+        const tomorrowISO = `${tY}-${tM}-${tD}`;
+
+        dateInput.value = tomorrowISO <= MAX_DATE_ISO ? tomorrowISO : todayISO;
+        state.dateISO = dateInput.value;
+        state.timeStr = timeInput.value || '17:30';
+        updateDatePreview();
+      }
+
+      function isDateWithinRange(iso) {
+        const todayISO = getTodayLocalISO();
+        return Boolean(iso) && iso >= todayISO && iso <= MAX_DATE_ISO;
+      }
+
+      function updateDatePreview() {
+        const val = dateInput.value;
+        const time = timeInput.value || '17:30';
+        state.dateISO = val;
+        state.timeStr = time;
+
+        if (!isDateWithinRange(val)) {
+          humanDatePreview.textContent = '⚠️ Seleziona una data valida';
+          dateErrorMsg.style.display = 'block';
+          btnGenerateTicket.disabled = true;
+          return;
+        }
+
+        dateErrorMsg.style.display = 'none';
+        btnGenerateTicket.disabled = false;
+        humanDatePreview.textContent = `📅 ${formatItalianDate(val)} • 🕒 Ore ${time}`;
+      }
+
+      dateInput.addEventListener('change', updateDatePreview);
+      dateInput.addEventListener('input', updateDatePreview);
+      timeInput.addEventListener('change', updateDatePreview);
+      timeInput.addEventListener('input', updateDatePreview);
+
+      initCalendarBounds();
+
+      // --- GENERAZIONE BIGLIETTO FINALE & EXPORT ---
+      function buildSummaryText() {
+        const niceDate = formatItalianDate(state.dateISO);
+        return (
+          `Ehi! Ho accettato l'invito 💕\n` +
+          `✨ Attività: ${state.activity}\n` +
+          `📍 Luogo: ${state.place}\n` +
+          `📅 Data: ${niceDate}\n` +
+          `🕒 Orario: ${state.timeStr}\n` +
+          `Ci vediamo lì! 😊`
+        );
+      }
+
+      function buildCalendarDates() {
+        const [y, m, d] = state.dateISO.split('-').map(Number);
+        const [hh, mm] = state.timeStr.split(':').map(Number);
+        const start = new Date(y, m - 1, d, hh, mm, 0);
+        const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // Durata 2 ore
+
+        const pad = n => String(n).padStart(2, '0');
+        const toCalStamp = dt =>
+          `${dt.getFullYear()}${pad(dt.getMonth() + 1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
+
+        return { startStamp: toCalStamp(start), endStamp: toCalStamp(end) };
+      }
+
+      btnGenerateTicket.addEventListener('click', () => {
+        if (!isDateWithinRange(state.dateISO) || !state.timeStr) {
+          dateErrorMsg.style.display = 'block';
+          return;
+        }
+
+        const niceDate = formatItalianDate(state.dateISO);
+        ticketActivity.textContent = state.activity;
+        ticketPlace.textContent = state.place;
+        ticketDate.textContent = niceDate;
+        ticketTime.textContent = `Ore ${state.timeStr}`;
+
+        // Link Google Calendar
+        const { startStamp, endStamp } = buildCalendarDates();
+        const title = encodeURIComponent(`${state.activity} (${state.place})`);
+        const location = encodeURIComponent(state.place);
+        const details = encodeURIComponent(`Appuntamento confermato: ${state.activity} a ${state.place}.`);
+        btnGoogleCal.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStamp}/${endStamp}&location=${location}&details=${details}`;
+
+        showScreen('stepTicket');
+      });
+
+      // Download file .ics (iPhone / Android / Outlook)
+      btnDownloadIcs.addEventListener('click', () => {
+        const { startStamp, endStamp } = buildCalendarDates();
+        const uid = `invite-${Date.now()}@appuntamento.local`;
+        const nowStamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+        const icsContent = [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'PRODID:-//Invito Speciale//IT',
+          'CALSCALE:GREGORIAN',
+          'BEGIN:VEVENT',
+          `UID:${uid}`,
+          `DTSTAMP:${nowStamp}`,
+          `DTSTART:${startStamp}`,
+          `DTEND:${endStamp}`,
+          `SUMMARY:${state.activity} - ${state.place}`,
+          `LOCATION:${state.place}`,
+          `DESCRIPTION:Appuntamento confermato: ${state.activity} presso ${state.place}.`,
+          'END:VEVENT',
+          'END:VCALENDAR'
+        ].join('\r\n');
+
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'il-nostro-appuntamento.ics';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Evento salvato! Aprilo per aggiungerlo al calendario 📅');
+      });
+
+      // Condivisione WhatsApp
+      btnWhatsapp.addEventListener('click', () => {
+        const text = encodeURIComponent(buildSummaryText());
+        window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank', 'noopener');
+      });
+
+      // Copia negli appunti
+      btnCopySummary.addEventListener('click', async () => {
+        const text = buildSummaryText();
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('Riepilogo copiato! Incollalo su WhatsApp 💌');
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          showToast('Riepilogo copiato! 💌');
+        }
+      });
+
+      btnEditAll.addEventListener('click', () => {
+        showScreen('step2');
+      });
+
+      let toastTimer;
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+    })();
+  </script>
+</body>
+</html>
