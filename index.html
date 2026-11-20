@@ -1,10 +1,11 @@
 <!--
-  PRIVACY & ARCHITETTURA (CLIENT-ONLY):
+  PRIVACY & SICUREZZA (CLIENT-ONLY):
   - Applicazione 100% statica client-side: nessun server proprietario, nessun database,
     nessun cookie, nessun localStorage/sessionStorage e nessun tracciamento analitico.
-  - Nessun numero di telefono o dato personale è salvato nel codice sorgente.
-  - Gli unici dati che lasciano il browser sono quelli che l'utente sceglie volontariamente
-    di inviare cliccando sui pulsanti verso servizi di terze parti:
+  - Nessun numero di telefono o dato personale salvato nel codice sorgente.
+  - Script inline protetto da hash crittografico SHA-384 nella CSP (zero 'unsafe-inline' per JS).
+  - Gli unici dati che lasciano il browser sono quelli che l'utente invia volontariamente
+    cliccando sui pulsanti verso servizi di terze parti:
     1) WhatsApp (Meta) tramite api.whatsapp.com/send
     2) Google Calendar tramite calendar.google.com/calendar/render
 -->
@@ -13,7 +14,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'none';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha384-l3mNabSsI12ANHzT3yYtMDffFR6PfKO3UBSTdqaSbK+6n7KraQH5bGgO1WTf+owU'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; connect-src 'none'; upgrade-insecure-requests;" />
   <title>Ho una possibilità? 💌</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -228,7 +229,7 @@
       -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.28);
       border-radius: 28px;
-      padding: 36px 24px 32px;
+      padding: 36px 24px 30px;
       text-align: center;
       box-shadow: 0 25px 50px -12px rgba(76, 5, 25, 0.45);
     }
@@ -246,7 +247,7 @@
 
     @media (min-width: 480px) {
       .glass-card {
-        padding: 42px 32px 38px;
+        padding: 42px 32px 34px;
       }
       .soft-card {
         padding: 26px 28px 32px;
@@ -281,6 +282,7 @@
       font-family: var(--font-serif);
       line-height: 1.2;
       letter-spacing: -0.01em;
+      outline: none;
     }
 
     .step1-title {
@@ -292,8 +294,8 @@
 
     .step1-subtitle {
       font-size: 0.96rem;
-      color: rgba(255, 240, 243, 0.92);
-      margin-bottom: 30px;
+      color: rgba(255, 240, 243, 0.94);
+      margin-bottom: 28px;
       line-height: 1.5;
     }
 
@@ -327,8 +329,20 @@
     .btn:focus-visible,
     .option-btn:focus-visible,
     .btn-back-step:focus-visible,
-    .link-back:focus-visible {
-      outline: 3px solid rgba(225, 29, 72, 0.45);
+    .link-back:focus-visible,
+    .playful-switch input:focus-visible + .playful-slider {
+      outline: 3px solid rgba(255, 255, 255, 0.85);
+      outline-offset: 2px;
+    }
+
+    .soft-card .btn:focus-visible,
+    .soft-card .option-btn:focus-visible,
+    .soft-card .btn-back-step:focus-visible,
+    .soft-card .link-back:focus-visible,
+    .ticket-wrapper .btn:focus-visible,
+    .ticket-wrapper .btn-back-step:focus-visible,
+    .reset-link-wrap .link-back:focus-visible {
+      outline: 3px solid rgba(225, 29, 72, 0.5);
       outline-offset: 2px;
     }
 
@@ -358,9 +372,9 @@
     }
 
     .btn-no {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.18);
       color: #ffffff;
-      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
       padding: 14px 28px;
       font-size: 1rem;
       backdrop-filter: blur(8px);
@@ -373,7 +387,7 @@
       margin: 0;
       transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.28s cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s ease;
       box-shadow: 0 10px 25px rgba(89, 13, 34, 0.38);
-      background: rgba(159, 18, 57, 0.88);
+      background: rgba(159, 18, 57, 0.9);
     }
 
     .btn-no.caught {
@@ -381,9 +395,66 @@
       border-color: #ffffff;
     }
 
+    /* Toggle Opt-In Modalità Scherzo (Zero Dark Pattern di default) */
+    .playful-toggle-wrap {
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 0.84rem;
+      color: rgba(255, 240, 243, 0.92);
+    }
+
+    .playful-switch {
+      position: relative;
+      display: inline-block;
+      width: 42px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .playful-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .playful-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      transition: background-color 0.25s ease;
+    }
+
+    .playful-slider::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transition: transform 0.25s ease;
+    }
+
+    .playful-switch input:checked + .playful-slider {
+      background-color: #ff758f;
+      border-color: #ffffff;
+    }
+
+    .playful-switch input:checked + .playful-slider::before {
+      transform: translateX(18px);
+    }
+
     .dodge-hint {
-      margin-top: 18px;
-      min-height: 22px;
+      margin-top: 12px;
+      min-height: 20px;
       font-size: 0.86rem;
       font-weight: 500;
       color: #ffe5ec;
@@ -403,8 +474,8 @@
     }
 
     .sub-state-box {
-      background: rgba(114, 9, 39, 0.38);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(114, 9, 39, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.28);
       border-radius: 20px;
       padding: 22px 18px;
       margin-top: 12px;
@@ -418,7 +489,7 @@
 
     .sub-state-text {
       font-size: 0.92rem;
-      color: rgba(255, 240, 243, 0.92);
+      color: rgba(255, 240, 243, 0.94);
       margin-bottom: 18px;
       line-height: 1.45;
     }
@@ -430,9 +501,9 @@
     }
 
     .btn-ghost-white {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.18);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       padding: 13px 18px;
       width: 100%;
     }
@@ -778,14 +849,14 @@
     .btn-whatsapp {
       width: 100%;
       padding: 15px 18px;
-      background: #25D366;
+      background: #1ea851;
       color: #ffffff;
-      box-shadow: 0 10px 22px rgba(37, 211, 102, 0.28);
+      box-shadow: 0 10px 22px rgba(30, 168, 81, 0.28);
     }
 
     @media (hover: hover) {
       .btn-whatsapp:hover {
-        background: #20bd5a;
+        background: #199446;
         transform: translateY(-1px);
       }
     }
@@ -847,44 +918,65 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+
+    /* Rispetto preferenze di movimento ridotto */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .floating-heart {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
 
   <!-- Sfondo animato -->
-  <div class="ambient-bg" id="ambientBg">
+  <div class="ambient-bg" id="ambientBg" aria-hidden="true">
     <div class="glow-orb one"></div>
     <div class="glow-orb two"></div>
   </div>
 
   <main class="app-shell">
     <!-- ==================== STEP 1 ==================== -->
-    <section id="step1" class="screen active">
+    <section id="step1" class="screen active" aria-labelledby="step1Heading">
       <div class="glass-card">
-        <span class="badge-pill">✨ Un invito speciale per te</span>
-        <h1 class="step1-title">Ho una possibilità?</h1>
+        <span class="badge-pill"><span aria-hidden="true">✨</span> Un invito speciale per te</span>
+        <h1 class="step1-title" id="step1Heading">Ho una possibilità?</h1>
         <p class="step1-subtitle" id="step1Subtitle">
           Prometto che non ti porterò in un posto noioso. Scegli con attenzione...
         </p>
 
         <!-- Pulsanti principali Step 1 -->
         <div class="step1-actions" id="step1MainControls">
-          <button type="button" class="btn btn-yes" id="btnYes">Sì 💕</button>
+          <button type="button" class="btn btn-yes" id="btnYes">Sì <span aria-hidden="true">💕</span></button>
           <button type="button" class="btn btn-no" id="btnNo">No</button>
         </div>
 
-        <p class="dodge-hint" id="dodgeHint"></p>
+        <!-- Toggle Opt-In per il mini-gioco di fuga (disattivato di default per accessibilità) -->
+        <div class="playful-toggle-wrap" id="playfulToggleWrap">
+          <label class="playful-switch" for="togglePlayful">
+            <input type="checkbox" id="togglePlayful" aria-label="Attiva modalità scherzo sul pulsante No" />
+            <span class="playful-slider"></span>
+          </label>
+          <label for="togglePlayful" style="cursor:pointer;">Modalità scherzo <span aria-hidden="true">😜</span></label>
+        </div>
 
-        <!-- Conferma 1 dopo 3 fughe -->
+        <p class="dodge-hint" id="dodgeHint" aria-live="polite"></p>
+
+        <!-- Conferma 1 -->
         <div class="sub-state" id="confirmNoBox">
           <div class="sub-state-box">
-            <h3 class="sub-state-title">Sei davvero sicura? 🥺</h3>
+            <h3 class="sub-state-title">Sei davvero sicura? <span aria-hidden="true">🥺</span></h3>
             <p class="sub-state-text">
               Pensaci un attimo: potrebbe essere l'inizio di una bellissima giornata!
             </p>
             <div class="sub-state-buttons">
               <button type="button" class="btn btn-yes" style="width:100%; animation:none;" id="btnReconsider">
-                Ci ripenso, torniamo indietro 💕
+                Ci ripenso, torniamo indietro <span aria-hidden="true">💕</span>
               </button>
               <button type="button" class="btn btn-ghost-white" id="btnConfirmNoFinal">
                 Sì, sono sicura
@@ -896,13 +988,13 @@
         <!-- Messaggio finale di resa ironica -->
         <div class="sub-state" id="surrenderBox">
           <div class="sub-state-box">
-            <h3 class="sub-state-title">Ok, mi arrendo 🏳️</h3>
+            <h3 class="sub-state-title">Ok, mi arrendo <span aria-hidden="true">🏳️</span></h3>
             <p class="sub-state-text">
               Hai vinto tu! Ma se per caso dovessi cambiare idea, questo pulsante qui sotto resta sempre valido...
             </p>
             <div class="sub-state-buttons">
               <button type="button" class="btn btn-yes" style="width:100%;" id="btnYesAfterSurrender">
-                Ok dai, clicco Sì 😊
+                Ok dai, clicco Sì <span aria-hidden="true">😊</span>
               </button>
               <button type="button" class="btn btn-ghost-white" id="btnBackToStart">
                 ← Torna all'inizio
@@ -914,21 +1006,21 @@
     </section>
 
     <!-- ==================== STEP 2 ==================== -->
-    <section id="step2" class="screen">
+    <section id="step2" class="screen" aria-labelledby="step2Heading">
       <div class="soft-card">
         <div class="card-nav-top">
-          <button type="button" class="btn-back-step" id="btnBackToStep1">← Indietro</button>
+          <button type="button" class="btn-back-step" id="btnBackToStep1" aria-label="Torna alla domanda iniziale">← Indietro</button>
         </div>
 
         <div class="step-header">
           <span class="badge-pill">Step 1 di 2 • Il programma</span>
-          <h2 class="step-title">Cosa vorresti fare?</h2>
+          <h2 class="step-title" id="step2Heading">Cosa vorresti fare?</h2>
           <p class="step-subtitle">Scegli l'idea che ti ispira di più</p>
         </div>
 
         <div class="options-grid">
           <button type="button" class="option-btn" data-activity="Gita in Montagna" data-place="Montagna">
-            <span class="option-icon">🏔️</span>
+            <span class="option-icon" aria-hidden="true">🏔️</span>
             <span>
               <span class="option-label">Montagna</span>
               <span class="option-desc">Aria fresca, panorama e zero stress</span>
@@ -936,7 +1028,7 @@
           </button>
 
           <button type="button" class="option-btn" data-activity="Passeggiata" data-place="Ferrara">
-            <span class="option-icon">🏰</span>
+            <span class="option-icon" aria-hidden="true">🏰</span>
             <span>
               <span class="option-label">Passeggiata a Ferrara</span>
               <span class="option-desc">Tra le mura, il centro storico e quattro chiacchiere</span>
@@ -944,7 +1036,7 @@
           </button>
 
           <button type="button" class="option-btn" data-activity="Pranzo con gelato" data-place="Padova">
-            <span class="option-icon">🍨</span>
+            <span class="option-icon" aria-hidden="true">🍨</span>
             <span>
               <span class="option-label">Pranzo con gelato a Padova</span>
               <span class="option-desc">Buon cibo, Prato della Valle e gelato finale</span>
@@ -952,7 +1044,7 @@
           </button>
 
           <button type="button" class="option-btn" id="btnOtherOption">
-            <span class="option-icon">✨</span>
+            <span class="option-icon" aria-hidden="true">✨</span>
             <span>
               <span class="option-label">Altro</span>
               <span class="option-desc">Proponi tu l'attività e il posto perfetto</span>
@@ -968,7 +1060,9 @@
               id="customActivityInput"
               class="text-input"
               placeholder="Cosa vuoi fare?"
+              aria-label="Cosa vuoi fare?"
               autocomplete="off"
+              maxlength="100"
             />
           </div>
           <div class="input-group">
@@ -977,7 +1071,9 @@
               id="customPlaceInput"
               class="text-input"
               placeholder="Luogo?"
+              aria-label="Luogo?"
               autocomplete="off"
+              maxlength="100"
             />
           </div>
           <button type="button" class="btn btn-primary-rose" id="btnConfirmCustom" disabled>
@@ -988,15 +1084,15 @@
     </section>
 
     <!-- ==================== STEP 3: CALENDARIO ==================== -->
-    <section id="step3" class="screen">
+    <section id="step3" class="screen" aria-labelledby="step3Heading">
       <div class="soft-card">
         <div class="card-nav-top">
-          <button type="button" class="btn-back-step" id="btnBackToStep2Top">← Indietro</button>
+          <button type="button" class="btn-back-step" id="btnBackToStep2Top" aria-label="Torna alla scelta attività">← Indietro</button>
         </div>
 
         <div class="step-header">
           <span class="badge-pill">Step 2 di 2 • Data e ora</span>
-          <h2 class="step-title">Quando ci vediamo?</h2>
+          <h2 class="step-title" id="step3Heading">Quando ci vediamo?</h2>
           <p class="step-subtitle">Scegli giorno, mese, anno e orario</p>
         </div>
 
@@ -1018,29 +1114,29 @@
           </div>
         </div>
 
-        <div class="date-preview-box" id="humanDatePreview">
+        <div class="date-preview-box" id="humanDatePreview" aria-live="polite">
           Seleziona una data valida
         </div>
 
-        <p class="error-msg" id="dateErrorMsg">
+        <p class="error-msg" id="dateErrorMsg" role="alert">
           Scegli una data compresa tra oggi e il 31 dicembre 2028.
         </p>
 
         <button type="button" class="btn btn-primary-rose" id="btnGenerateTicket">
-          Conferma appuntamento 🎟️
+          Conferma appuntamento <span aria-hidden="true">🎟️</span>
         </button>
       </div>
     </section>
 
     <!-- ==================== SCHERMATA FINALE: INVITO UFFICIALE ==================== -->
-    <section id="stepTicket" class="screen">
+    <section id="stepTicket" class="screen" aria-labelledby="ticketHeading">
       <div class="ticket-wrapper">
         <div class="ticket-top">
           <div class="card-nav-top">
-            <button type="button" class="btn-back-step" id="btnBackToStep3">← Indietro</button>
+            <button type="button" class="btn-back-step" id="btnBackToStep3" aria-label="Torna alla scelta di data e ora">← Indietro</button>
           </div>
           <span class="ticket-stamp">Invito Ufficiale Confermato</span>
-          <h2 class="ticket-title">Il nostro appuntamento ✨</h2>
+          <h2 class="ticket-title" id="ticketHeading">Il nostro appuntamento <span aria-hidden="true">✨</span></h2>
         </div>
 
         <div class="ticket-body">
@@ -1062,21 +1158,21 @@
           </div>
         </div>
 
-        <div class="ticket-divider">
+        <div class="ticket-divider" aria-hidden="true">
           <div class="ticket-dashed-line"></div>
         </div>
 
         <div class="ticket-actions">
           <button type="button" class="btn btn-whatsapp" id="btnWhatsapp">
-            Invia su WhatsApp 💬
+            Invia su WhatsApp <span aria-hidden="true">💬</span>
           </button>
 
-          <a href="about:blank" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-soft" id="btnGoogleCal" style="text-decoration:none;">
-            🗓️ Aggiungi a Google Calendar
+          <a href="https://calendar.google.com/calendar/render" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-soft" id="btnGoogleCal" style="text-decoration:none;">
+            <span aria-hidden="true">🗓️</span> Aggiungi a Google Calendar
           </a>
 
           <button type="button" class="btn btn-secondary-soft" id="btnCopySummary">
-            📋 Copia riepilogo
+            <span aria-hidden="true">📋</span> Copia riepilogo
           </button>
 
           <p class="privacy-note">
@@ -1092,21 +1188,25 @@
     </section>
   </main>
 
-  <div class="toast" id="toast">Copiato negli appunti!</div>
+  <div class="toast" id="toast" role="status" aria-live="polite">Copiato negli appunti!</div>
 
   <script>
     (function () {
-      // --- DIFESA CLICKJACKING CLIENT-SIDE ---
+      'use strict';
+
+      // --- 1. DIFESA CLICKJACKING SINCRONA (PRIMA DI QUALSIASI RENDERING) ---
       try {
         if (window.top !== window.self) {
           window.top.location = window.self.location;
         }
-      } catch {
+      } catch (err) {
         document.documentElement.style.display = 'none';
+        return;
       }
 
-      // --- STATO DELL'APPLICAZIONE ---
+      // --- 2. STATO DELL'APPLICAZIONE (SOLO IN MEMORIA, ZERO STORAGE) ---
       const state = {
+        playfulMode: false,
         noDodges: 0,
         maxDodges: 3,
         activity: '',
@@ -1115,7 +1215,7 @@
         timeStr: '17:30' // HH:MM
       };
 
-      // --- RIFERIMENTI DOM ---
+      // --- 3. RIFERIMENTI DOM ---
       const body = document.body;
       const ambientBg = document.getElementById('ambientBg');
 
@@ -1129,6 +1229,8 @@
       // Step 1
       const btnYes = document.getElementById('btnYes');
       const btnNo = document.getElementById('btnNo');
+      const togglePlayful = document.getElementById('togglePlayful');
+      const playfulToggleWrap = document.getElementById('playfulToggleWrap');
       const step1MainControls = document.getElementById('step1MainControls');
       const dodgeHint = document.getElementById('dodgeHint');
       const confirmNoBox = document.getElementById('confirmNoBox');
@@ -1170,10 +1272,11 @@
       const btnRestartAll = document.getElementById('btnRestartAll');
       const toast = document.getElementById('toast');
 
-      // --- CUORI FLUTTUANTI DI SFONDO ---
+      // --- 4. CUORI FLUTTUANTI DI SFONDO ---
       function spawnHeart() {
         const heart = document.createElement('span');
         heart.className = 'floating-heart';
+        heart.setAttribute('aria-hidden', 'true');
         const isSoft = body.classList.contains('soft-theme');
         const symbols = isSoft ? ['🌸', '💕', '✨', '🤍'] : ['❤️', '💖', '💕', '✨'];
         heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
@@ -1187,18 +1290,26 @@
       setInterval(spawnHeart, 1300);
       for (let i = 0; i < 5; i++) setTimeout(spawnHeart, i * 350);
 
-      // --- NAVIGAZIONE TRA STEP ---
+      // --- 5. NAVIGAZIONE TRA STEP & GESTIONE FOCUS ACCESSIBILE ---
       function showScreen(name) {
-        Object.values(screens).forEach(s => s.classList.remove('active'));
-        screens[name].classList.add('active');
+        Object.values(screens).forEach((s) => s.classList.remove('active'));
+        const targetScreen = screens[name];
+        targetScreen.classList.add('active');
 
         if (name !== 'step1') {
           btnNo.style.display = 'none';
         }
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        const heading = targetScreen.querySelector('h1, h2');
+        if (heading) {
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+        }
       }
 
-      // --- LOGICA STEP 1: PULSANTE "NO" CHE SCAPPA 3 VOLTE ---
+      // --- 6. LOGICA STEP 1: PULSANTE "NO" LIBERO DI DEFAULT + GIOCO OPT-IN ---
       const dodgePhrases = [
         'Ops, troppo lenta! 😜',
         'Ci hai quasi preso... riprova! 👀',
@@ -1209,6 +1320,16 @@
         const vw = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
         const vh = Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight);
         return { vw, vh };
+      }
+
+      function restoreNoButtonPosition() {
+        btnNo.classList.remove('escaping', 'caught');
+        btnNo.style.left = '';
+        btnNo.style.top = '';
+        btnNo.style.display = 'inline-flex';
+        if (btnNo.parentElement !== step1MainControls) {
+          step1MainControls.appendChild(btnNo);
+        }
       }
 
       function moveNoButtonRandomly() {
@@ -1260,26 +1381,43 @@
         }
       }
 
-      function handleNoAttempt(e) {
-        if (state.noDodges < state.maxDodges) {
+      function shouldDodge() {
+        return state.playfulMode && state.noDodges < state.maxDodges;
+      }
+
+      function handleNoHoverOrTouch(e) {
+        if (shouldDodge()) {
           if (e.cancelable) e.preventDefault();
           e.stopPropagation();
           moveNoButtonRandomly();
         }
       }
 
-      btnNo.addEventListener('mouseenter', handleNoAttempt);
-      btnNo.addEventListener('touchstart', handleNoAttempt, { passive: false });
+      togglePlayful.addEventListener('change', () => {
+        state.playfulMode = togglePlayful.checked;
+        state.noDodges = 0;
+        dodgeHint.textContent = state.playfulMode
+          ? 'Modalità scherzo attiva: prova a prendere il "No" 😜'
+          : '';
+        if (!state.playfulMode) {
+          restoreNoButtonPosition();
+        }
+      });
+
+      btnNo.addEventListener('mouseenter', handleNoHoverOrTouch);
+      btnNo.addEventListener('touchstart', handleNoHoverOrTouch, { passive: false });
 
       btnNo.addEventListener('click', (e) => {
-        if (state.noDodges < state.maxDodges) {
-          handleNoAttempt(e);
+        if (shouldDodge()) {
+          handleNoHoverOrTouch(e);
           return;
         }
         btnNo.style.display = 'none';
         step1MainControls.style.display = 'none';
+        playfulToggleWrap.style.display = 'none';
         dodgeHint.textContent = '';
         confirmNoBox.classList.add('active');
+        btnReconsider.focus({ preventScroll: true });
       });
 
       window.addEventListener('resize', () => {
@@ -1298,15 +1436,11 @@
         confirmNoBox.classList.remove('active');
         surrenderBox.classList.remove('active');
         step1MainControls.style.display = 'flex';
-        dodgeHint.textContent = '';
-
-        btnNo.classList.remove('escaping', 'caught');
-        btnNo.style.left = '';
-        btnNo.style.top = '';
-        btnNo.style.display = 'inline-flex';
-        if (btnNo.parentElement !== step1MainControls) {
-          step1MainControls.appendChild(btnNo);
-        }
+        playfulToggleWrap.style.display = 'flex';
+        dodgeHint.textContent = state.playfulMode
+          ? 'Modalità scherzo attiva: prova a prendere il "No" 😜'
+          : '';
+        restoreNoButtonPosition();
       }
 
       function goBackToStep1() {
@@ -1322,6 +1456,7 @@
       btnConfirmNoFinal.addEventListener('click', () => {
         confirmNoBox.classList.remove('active');
         surrenderBox.classList.add('active');
+        btnYesAfterSurrender.focus({ preventScroll: true });
       });
 
       function goToStep2() {
@@ -1334,10 +1469,10 @@
       btnYes.addEventListener('click', goToStep2);
       btnYesAfterSurrender.addEventListener('click', goToStep2);
 
-      // --- LOGICA STEP 2: SCELTA ATTIVITÀ ---
-      optionBtns.forEach(btn => {
+      // --- 7. LOGICA STEP 2: SCELTA ATTIVITÀ ---
+      optionBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-          optionBtns.forEach(b => b.classList.remove('selected'));
+          optionBtns.forEach((b) => b.classList.remove('selected'));
           btnOtherOption.classList.remove('selected');
           btn.classList.add('selected');
           customDrawer.classList.remove('open');
@@ -1349,7 +1484,7 @@
       });
 
       btnOtherOption.addEventListener('click', () => {
-        optionBtns.forEach(b => b.classList.remove('selected'));
+        optionBtns.forEach((b) => b.classList.remove('selected'));
         btnOtherOption.classList.add('selected');
         customDrawer.classList.add('open');
         customActivityInput.focus();
@@ -1384,7 +1519,7 @@
       btnBackToStep2.addEventListener('click', () => showScreen('step2'));
       btnBackToStep2Top.addEventListener('click', () => showScreen('step2'));
 
-      // --- LOGICA STEP 3: CALENDARIO DINAMICO (OGGI -> 31 DIC 2028) ---
+      // --- 8. LOGICA STEP 3: CALENDARIO DINAMICO (OGGI -> 31 DIC 2028) ---
       const MAX_DATE_ISO = '2028-12-31';
 
       function getTodayLocalISO() {
@@ -1456,17 +1591,17 @@
 
       initCalendarBounds();
 
-      // --- GENERAZIONE BIGLIETTO FINALE & CONDIVISIONE ---
+      // --- 9. GENERAZIONE BIGLIETTO FINALE & CONDIVISIONE ---
       function buildSummaryText() {
         const niceDate = formatItalianDate(state.dateISO);
-        return (
-          `Ehi! Ho accettato l'invito 💕\n` +
-          `✨ Attività: ${state.activity}\n` +
-          `📍 Luogo: ${state.place}\n` +
-          `📅 Data: ${niceDate}\n` +
-          `🕒 Orario: ${state.timeStr}\n` +
-          `Ci vediamo lì! 😊`
-        );
+        return [
+          "Ehi! Ho accettato l'invito 💕",
+          `✨ Attività: ${state.activity}`,
+          `📍 Luogo: ${state.place}`,
+          `📅 Data: ${niceDate}`,
+          `🕒 Orario: ${state.timeStr}`,
+          'Ci vediamo lì! 😊'
+        ].join('\n');
       }
 
       function buildCalendarDates() {
@@ -1475,8 +1610,8 @@
         const start = new Date(y, m - 1, d, hh, mm, 0);
         const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
 
-        const pad = n => String(n).padStart(2, '0');
-        const toCalStamp = dt =>
+        const pad = (n) => String(n).padStart(2, '0');
+        const toCalStamp = (dt) =>
           `${dt.getFullYear()}${pad(dt.getMonth() + 1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
 
         return { startStamp: toCalStamp(start), endStamp: toCalStamp(end) };
@@ -1504,7 +1639,7 @@
       });
 
       btnGoogleCal.addEventListener('click', (e) => {
-        if (!btnGoogleCal.href.startsWith('https://calendar.google.com/')) {
+        if (!btnGoogleCal.href.startsWith('https://calendar.google.com/calendar/render')) {
           e.preventDefault();
         }
       });
@@ -1529,7 +1664,7 @@
             await navigator.clipboard.writeText(text);
             showToast('Riepilogo copiato! Incollalo su WhatsApp 💌');
             return;
-          } catch {
+          } catch (err) {
             // Prosegue al fallback se i permessi clipboard sono negati
           }
         }
