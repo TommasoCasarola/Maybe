@@ -906,8 +906,8 @@
               <button type="button" class="btn btn-yes" style="width:100%;" id="btnYesAfterSurrender">
                 Ok dai, clicco Sì 😊
               </button>
-              <button type="button" class="btn btn-ghost-white" id="btnBackToStart">
-                ← Torna all'inizio
+              <button type="button" class="btn btn-ghost-white" id="btnStayFriends">
+                Ok dai ci ho provato, rimaniamo amici 🤝
               </button>
             </div>
           </div>
@@ -1043,25 +1043,25 @@
           <div class="card-nav-top">
             <button type="button" class="btn-back-step" id="btnBackToStep3">← Indietro</button>
           </div>
-          <span class="ticket-stamp">Invito Ufficiale Confermato</span>
-          <h2 class="ticket-title">Il nostro appuntamento ✨</h2>
+          <span class="ticket-stamp" id="ticketStamp">Invito Ufficiale Confermato</span>
+          <h2 class="ticket-title" id="ticketTitle">Il nostro appuntamento ✨</h2>
         </div>
 
         <div class="ticket-body">
           <div class="ticket-row">
-            <span class="ticket-key">Attività</span>
+            <span class="ticket-key" id="ticketKey1">Attività</span>
             <span class="ticket-val" id="ticketActivity">—</span>
           </div>
           <div class="ticket-row">
-            <span class="ticket-key">Luogo</span>
+            <span class="ticket-key" id="ticketKey2">Luogo</span>
             <span class="ticket-val" id="ticketPlace">—</span>
           </div>
           <div class="ticket-row">
-            <span class="ticket-key">Data</span>
+            <span class="ticket-key" id="ticketKey3">Data</span>
             <span class="ticket-val" id="ticketDate">—</span>
           </div>
           <div class="ticket-row">
-            <span class="ticket-key">Orario</span>
+            <span class="ticket-key" id="ticketKey4">Orario</span>
             <span class="ticket-val" id="ticketTime">—</span>
           </div>
         </div>
@@ -1116,6 +1116,7 @@
       const state = {
         noDodges: 0,
         maxDodges: 3,
+        isFriendMode: false,
         activity: '',
         place: '',
         dateISO: '',     // YYYY-MM-DD
@@ -1143,7 +1144,7 @@
       const btnReconsider = document.getElementById('btnReconsider');
       const btnConfirmNoFinal = document.getElementById('btnConfirmNoFinal');
       const btnYesAfterSurrender = document.getElementById('btnYesAfterSurrender');
-      const btnBackToStart = document.getElementById('btnBackToStart');
+      const btnStayFriends = document.getElementById('btnStayFriends');
 
       // Step 2
       const btnBackToStep1 = document.getElementById('btnBackToStep1');
@@ -1166,6 +1167,12 @@
 
       // Ticket Finale
       const btnBackToStep3 = document.getElementById('btnBackToStep3');
+      const ticketStamp = document.getElementById('ticketStamp');
+      const ticketTitle = document.getElementById('ticketTitle');
+      const ticketKey1 = document.getElementById('ticketKey1');
+      const ticketKey2 = document.getElementById('ticketKey2');
+      const ticketKey3 = document.getElementById('ticketKey3');
+      const ticketKey4 = document.getElementById('ticketKey4');
       const ticketActivity = document.getElementById('ticketActivity');
       const ticketPlace = document.getElementById('ticketPlace');
       const ticketDate = document.getElementById('ticketDate');
@@ -1302,6 +1309,7 @@
 
       function resetStep1() {
         state.noDodges = 0;
+        state.isFriendMode = false;
         confirmNoBox.classList.remove('active');
         surrenderBox.classList.remove('active');
         step1MainControls.style.display = 'flex';
@@ -1323,7 +1331,6 @@
       }
 
       btnReconsider.addEventListener('click', resetStep1);
-      btnBackToStart.addEventListener('click', resetStep1);
       btnBackToStep1.addEventListener('click', goBackToStep1);
 
       btnConfirmNoFinal.addEventListener('click', () => {
@@ -1332,14 +1339,43 @@
       });
 
       function goToStep2() {
+        state.isFriendMode = false;
         body.classList.add('soft-theme');
         btnNo.style.display = 'none';
         for (let i = 0; i < 8; i++) setTimeout(spawnHeart, i * 100);
         showScreen('step2');
       }
 
+      function goToFriendConclusion() {
+        state.isFriendMode = true;
+        body.classList.add('soft-theme');
+        btnNo.style.display = 'none';
+        for (let i = 0; i < 6; i++) setTimeout(spawnHeart, i * 120);
+
+        ticketStamp.textContent = 'Verdetto Ufficiale Confermato';
+        ticketTitle.textContent = 'Amici come prima 🤝';
+
+        ticketKey1.textContent = 'Esito';
+        ticketActivity.textContent = 'Amici come prima';
+
+        ticketKey2.textContent = 'Atmosfera';
+        ticketPlace.textContent = 'Zero imbarazzo, tutto come prima';
+
+        ticketKey3.textContent = 'Validità';
+        ticketDate.textContent = 'Senza scadenza ✨';
+
+        ticketKey4.textContent = 'Nota';
+        ticketTime.textContent = 'Grazie per la sincerità 😊';
+
+        btnGoogleCal.style.display = 'none';
+        btnEditActivity.style.display = 'none';
+
+        showScreen('stepTicket');
+      }
+
       btnYes.addEventListener('click', goToStep2);
       btnYesAfterSurrender.addEventListener('click', goToStep2);
+      btnStayFriends.addEventListener('click', goToFriendConclusion);
 
       // --- LOGICA STEP 2: SCELTA ATTIVITÀ ---
       optionBtns.forEach((btn) => {
@@ -1465,6 +1501,14 @@
 
       // --- GENERAZIONE BIGLIETTO FINALE & CONDIVISIONE ---
       function buildSummaryText() {
+        if (state.isFriendMode) {
+          return [
+            'Ehi! Ho apprezzato tantissimo il gesto 😊',
+            '🤝 Esito: Amici come prima',
+            '✨ Atmosfera: Zero imbarazzo, tutto come prima',
+            'Ci sentiamo presto! 👋'
+          ].join('\n');
+        }
         const niceDate = formatItalianDate(state.dateISO);
         return [
           "Ehi! Ho accettato l'invito 💕",
@@ -1495,11 +1539,25 @@
           return;
         }
 
+        state.isFriendMode = false;
         const niceDate = formatItalianDate(state.dateISO);
+        ticketStamp.textContent = 'Invito Ufficiale Confermato';
+        ticketTitle.textContent = 'Il nostro appuntamento ✨';
+
+        ticketKey1.textContent = 'Attività';
         ticketActivity.textContent = state.activity;
+
+        ticketKey2.textContent = 'Luogo';
         ticketPlace.textContent = state.place;
+
+        ticketKey3.textContent = 'Data';
         ticketDate.textContent = niceDate;
+
+        ticketKey4.textContent = 'Orario';
         ticketTime.textContent = `Ore ${state.timeStr}`;
+
+        btnGoogleCal.style.display = 'inline-flex';
+        btnEditActivity.style.display = 'inline';
 
         const { startStamp, endStamp } = buildCalendarDates();
         const title = encodeURIComponent(`${state.activity} (${state.place})`);
@@ -1517,7 +1575,17 @@
       });
 
       // Pulsanti Indietro dalla schermata finale
-      btnBackToStep3.addEventListener('click', () => showScreen('step3'));
+      btnBackToStep3.addEventListener('click', () => {
+        if (state.isFriendMode) {
+          body.classList.remove('soft-theme');
+          confirmNoBox.classList.remove('active');
+          step1MainControls.style.display = 'none';
+          surrenderBox.classList.add('active');
+          showScreen('step1');
+          return;
+        }
+        showScreen('step3');
+      });
       btnEditActivity.addEventListener('click', () => showScreen('step2'));
       btnRestartAll.addEventListener('click', goBackToStep1);
 
